@@ -11,7 +11,7 @@ int main(){
 
     //primeiramente, o mais essencial será abrir o arquivo.
     FILE *arquivo = fopen("results.csv","r");//esse "r" é apenas para indicar que apenas será lido.
-    if (arquivo = NULL) {//caso não ache o arquivo, ele deve resultar nessa parte.
+    if (arquivo == NULL) {//caso não ache o arquivo, ele deve resultar nessa parte.
         printf("Erro ao abrir o arquivo.\n");
         return 1;// o return faz o código parar.
     }
