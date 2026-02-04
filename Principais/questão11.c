@@ -1,11 +1,12 @@
+//Determine em qual edição olímpica um dado país conquistou sua primeira medalha e qual foi o tipo da medalha.
 //todos os imports necessários.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "../Bibliotecas/csvUtil.h"
 //definindo o tamanho máximo, em bytes de cada linha.
-#define MAX_LINE 1024
+#define MAX_LINE 262144 // vou alterar para 262144, o valor aterior é 1024
 
 int main(){
 
@@ -25,34 +26,54 @@ int main(){
     printf("Digite o país (NOC com apenas 3 letras ex: BRA, FRA): ");
     scanf("%3s", pais_escolhido); // esse n3 é para definir o tamanho máximo.
 
-    //isso aqui é para ignorar o cabeçalio.
-    fgets(linha, MAX_LINE, arquivo);
+    
+    fgets(linha, MAX_LINE, arquivo);   // lê o cabeçalho
+    removerQuebraLinha(linha);
 
-    while(fgets(linha, MAX_LINE, arquivo)){
-        char *games, *event, *team, *pos, *medal, *as, *athlete_id, *noc; //aqui cria-se ponteiros para determinadas informações.
-        
-        games = strtok(linha, ","); //esses strtok servem para basicamentre separarem a string original pegada por "linha" e dividi-lá em partes.
-        event = strtok(NULL, ","); //cada ponteiro desse criado irá apontar para a informação que está separada por vírgulas.
-        team = strtok(NULL, ",");
-        pos = strtok(NULL, ",");
-        medal = strtok(NULL, ",");
-        as = strtok(NULL, ",");
-        athlete_id = strtok(NULL, ",");
-        noc = strtok(NULL, ",");
+    char *camposCabecalho[64];
+    int totalCabecalho = separarCsv(linha, camposCabecalho, 64);
 
-        if(games==NULL || medal==NULL || noc==NULL){// se um desses for null, não há relevância, logo não deve nem ser contqbilizado, pq o que interessa são os campeões.
+    int indiceGames = encontrarIndiceColuna(camposCabecalho, totalCabecalho, "Games");
+    int indiceMedal = encontrarIndiceColuna(camposCabecalho, totalCabecalho, "Medal");
+    int indiceNoc   = encontrarIndiceColuna(camposCabecalho, totalCabecalho, "NOC");
+
+    if (indiceGames < 0 || indiceMedal < 0 || indiceNoc < 0) {
+        printf("Erro: colunas necessárias não encontradas.\n");
+        fclose(arquivo);
+        return 1;
+    }
+
+
+    while (fgets(linha, MAX_LINE, arquivo)) {   // lê cada linha do arquivo
+        //funcao feita para remover quebras de linha. essa função está em csvUtil.c
+        removerQuebraLinha(linha);
+
+        char *campos[64];
+        int totalCampos = separarCsv(linha, campos, 64);//separa a linha em campos.
+
+        if (totalCampos <= indiceNoc ||
+            totalCampos <= indiceMedal ||
+            totalCampos <= indiceGames) {   //verifica se os índices são válidos.
             continue;
         }
+        //pega os campos necessários.
+        char *games = campos[indiceGames];
+        char *medal = campos[indiceMedal];
+        char *noc   = campos[indiceNoc];
 
-        if(strcmp(noc, pais_escolhido) == 0 && strlen(medal) > 0) {//verifica se o paíz escolhido é igual ao país da linha e verifica se há medalha.
-            int ano = atoi(games);//pega apenas o início da string e converte até onde for número.
+        if (!games || !medal || !noc) continue; //verifica se os campos não são nulos.
 
-            if(ano < primeiro_ano) {// se esse ano for menor que o primeiro ano...
-                primeiro_ano = ano;//primeiro ano se tornará esse ano.
-                strcpy(primeira_edicao, games);//aqui primeira edição receberá o "games" como valor.
+        if (strcmp(noc, pais_escolhido) == 0 && strlen(medal) > 0) { //compara se o noc é igual ao país escolhido e se a medalha não é vazia.
+
+            int ano = atoi(games);
+
+            if (ano < primeiro_ano) {
+                primeiro_ano = ano;
+                strcpy(primeira_edicao, games);
             }
         }
     }
+
     fclose(arquivo);//fecha o arquivo após averiguar todos os dados
 
     if (primeiro_ano == 9999) {//se o aprimeiro ano continuar o mesmo, então o país não ganhou medalhas.
