@@ -126,3 +126,20 @@ int extrairAnoEEstacaoGames(const char *games, int *ano, char *estacao3, size_t 
 
     return (j > 0);
 }
+
+int medalhaValida(const char *medalha) {
+    if (!medalha) return 0;
+    if (medalha[0] == '\0') return 0;
+    if (strcmp(medalha, "NA") == 0) return 0;
+    return 1;
+}
+
+TipoMedalha identificarTipoMedalha(const char *medalha) {
+    if (!medalha) return medalhaNenhum;
+
+    if (strcmp(medalha, "Gold") == 0)   return medalhaOuro;
+    if (strcmp(medalha, "Silver") == 0) return medalhaPrata;
+    if (strcmp(medalha, "Bronze") == 0) return medalhaBronze;
+
+    return medalhaNenhum;
+}
