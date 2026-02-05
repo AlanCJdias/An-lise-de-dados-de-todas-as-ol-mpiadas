@@ -7,9 +7,18 @@
 
 #define MAX_LINE 262144
 
+int contemElemento(int *v, int tamanho, int valor) {
+    for (int i = 0; i < tamanho; i++) {
+        if (v[i] == valor)
+            return 1;
+    }
+    return 0;
+}
 
 int executarQuestao5(void){
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
+
+    double imc_total,qtdd_atletas=0;// esse será o que a questão pede.
 
     FILE *arquivo = fopen("arquivoscsvs/results/results.csv","r");//pega os arquivos com todos os jogos.
     int edição_escolhida=9999;
@@ -31,7 +40,7 @@ int executarQuestao5(void){
 
     while(fgets(linha, MAX_LINE, arquivo)){
         char *games, *event, *team, *pos, *medal, *as, *athlete_id, *noc;
-
+        
         games = strtok(linha, ",");
         event = strtok(NULL, ",");
         team = strtok(NULL, ",");
@@ -41,14 +50,14 @@ int executarQuestao5(void){
         athlete_id = strtok(NULL, ",");
         noc = strtok(NULL, ",");
 
-        if (medal == NULL || strlen(medal) == 0) {
+        if (strlen(medal) == 0) {
             continue; // não ganhou medalha
         }
 
-        if (athlete_id != NULL) {
-            int id = atoi(athlete_id); // converte string → int
+        if (strlen(athlete_id) != 0) {//verifica se há String do id do atleta
+            int id = atoi(athlete_id); // converte de string para int
 
-            int *temp = realloc(lista, (tamanho + 1) * sizeof(int));
+            int *temp = realloc(lista, (tamanho + 1) * sizeof(int));//refaz a lista adicionando esse id.
             if (temp == NULL) {
                 free(lista);
                 printf("Erro de memória.\n");
@@ -60,7 +69,9 @@ int executarQuestao5(void){
         }
     }
     free(arquivo);//não é mais necessário ter esse arquivo aberto.
-
+    if (tamanho==0){
+        return 0;
+    }
     FILE *bio = fopen("arquivoscsvs/athletes/bios_locs.csv","r");
 
     fgets(linha, MAX_LINE, arquivo);//apenas para remover o cabeçalho.    
@@ -69,18 +80,29 @@ int executarQuestao5(void){
         //o arquivo original CSV é:
         //athlete_id,name,born_date,born_city,born_region,born_country,NOC,height_cm,weight_kg,
         char *id, *name, *born, *born_city, *born_region, *born_country, *NOC, *height, *weight;
+        double peso,altura,imc;
 
-        id = strtok(linha, ",");
+        //aqui abaixo está o reconhecimendo dos dados:
+
+        id = strtok(linha, ",");//parte que também nos interessa.
         name = strtok(NULL, ",");
         born = strtok(NULL, ",");
         born_city = strtok(NULL, ",");
         born_region = strtok(NULL, ",");
         born_country = strtok(NULL, ",");
         NOC = strtok(NULL, ",");
-        height = strtok(NULL, ",");
+        height = strtok(NULL, ",");//parte que também nos interessa.
         weight = strtok(NULL, ",");//parte que nos interessa.
-        
-        
+
+        if(contemElemento(lista,tamanho,atoi(id)) == 1){//funçãpo para percorrer a lista e verificar se o id está presente na lista dos ganhadores.
+            peso = atoi(weight);
+            altura = atoi(height);
+            imc = peso/(altura*altura);//fazer o calculo do imc desse atleta.
+            imc_total += imc;//adicionar o imc no imc total.
+            qtdd_atletas += 1;//adiciona um atleta na quantidade de atletas total daquele ano.
+        }else{
+            continue;
+        }
     }
     free(bio);//não é mais necessário ter esse arquivo aberto.
     return 0;
