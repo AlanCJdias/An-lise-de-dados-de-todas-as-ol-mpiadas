@@ -14,6 +14,16 @@ int contemElemento(int *lista, int tamanho, int valor) {
     return 0;
 }
 
+void transformarAspasParaZero(char *texto) {
+    int dentro = 0;
+    for (int i = 0; texto[i]; i++) {
+        if (texto[i] == '"')
+            dentro = !dentro, texto[i] = '0';
+        else if (dentro)
+            texto[i] = '0';
+    }
+}
+
 int main(){
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
 
@@ -43,7 +53,8 @@ int main(){
 
     while(fgets(linha, MAX_LINE, arquivo)){
 
-        remover_entre_aspas(linha);
+
+        transformarAspasParaZero(linha);
 
         //formato do arquivo: Games,Event,Team,Pos,Medal,As,athlete_id.
         char *games, *Event, *Team, *Pos, *Medal, *As, *athlete_id;
@@ -57,7 +68,7 @@ int main(){
         Pos = strtok(NULL, ",");
         Medal = strtok(NULL, ",");
         As = strtok(NULL, ",");
-        athlete_id = strtok(NULL, ",");
+        athlete_id = strtok(NULL, ","); 
 
         if(games==NULL || strlen(games)==0){
             continue;
@@ -71,8 +82,10 @@ int main(){
             continue; // não ganhou medalha
         }
 
-        printf("ANO: %d, Medal: '%s', ID: '%s'\n", atoi(games), Medal, athlete_id);//tá dando erro de pegar os campos errados, o csv tem muitas "".
+        //tá dando erro de pegar os campos errados, o csv tem muitas "".
+
         if (athlete_id!=NULL && strlen(athlete_id) > 0 ) {//verifica se há String do id do atleta
+            printf("ANO: %d, Medal: '%s', ID: '%s'\n", atoi(games), Medal, athlete_id);
             if(contemElemento(lista,tamanho,atoi(athlete_id)) == 1){//verifica se esse atleta ja está na lista.
                 continue;
             }
@@ -110,7 +123,7 @@ int main(){
         char *id, *name, *born, *born_city, *born_region, *born_country, *NOC, *height, *weight;
         double peso;
 
-        remover_entre_aspas(linha);
+        transformarAspasParaZero(linha);
 
         //aqui abaixo está o reconhecimendo dos dados:
 
@@ -129,7 +142,7 @@ int main(){
         }
         if(strlen(weight) < 2 || strlen(weight)> 6 ){
             continue;
-        } 
+        }
 
         // NO LOOP DO bios.csv  
         //printf("ID: '%s', Weight: '%s'\n", id, weight); teste para vê se pegava corretamnete o ID e o peso.
