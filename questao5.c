@@ -14,15 +14,27 @@ int contemElemento(int *lista, int tamanho, int valor) {
     return 0;
 }
 
-void transformarAspasParaZero(char *texto) {
-    int dentro = 0;
-    for (int i = 0; texto[i]; i++) {
-        if (texto[i] == '"')
-            dentro = !dentro, texto[i] = '0';
-        else if (dentro)
-            texto[i] = '0';
+int proximoCampo(char **ptr, char **campo) {
+    char *p = *ptr;
+    int dentroAspas = 0;
+
+    *campo = p;
+
+    while (*p) {
+        if (*p == '"') {
+            dentroAspas = !dentroAspas;
+        } else if (*p == ',' && !dentroAspas) {
+            *p = '\0';
+            *ptr = p + 1;
+            return 1;
+        }
+        p++;
     }
+
+    *ptr = p;
+    return 1;
 }
+
 
 int main(){
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
@@ -53,22 +65,23 @@ int main(){
 
     while(fgets(linha, MAX_LINE, arquivo)){
 
-
-        transformarAspasParaZero(linha);
-
         //formato do arquivo: Games,Event,Team,Pos,Medal,As,athlete_id.
         char *games, *Event, *Team, *Pos, *Medal, *As, *athlete_id;
 
         //eu tenho que remover a parte que está entre aspas.
-        
+        //é aqui que a porca torce o rabo.
+        //aparentemente, agora está funcionando corretamente.
+        char *ptr = linha;
+        char *campo;
 
-        games = strtok(linha, ",");
-        Event = strtok(NULL, ",");
-        Team = strtok(NULL, ",");
-        Pos = strtok(NULL, ",");
-        Medal = strtok(NULL, ",");
-        As = strtok(NULL, ",");
-        athlete_id = strtok(NULL, ","); 
+        proximoCampo(&ptr, &games);
+        proximoCampo(&ptr, &Event);
+        proximoCampo(&ptr, &Team);
+        proximoCampo(&ptr, &Pos);
+        proximoCampo(&ptr, &Medal);
+        proximoCampo(&ptr, &As);
+        proximoCampo(&ptr, &athlete_id);
+
 
         if(games==NULL || strlen(games)==0){
             continue;
@@ -85,9 +98,9 @@ int main(){
         //tá dando erro de pegar os campos errados, o csv tem muitas "".
 
         if (athlete_id!=NULL && strlen(athlete_id) > 0 ) {//verifica se há String do id do atleta
-            printf("ANO: %d, Medal: '%s', ID: '%s'\n", atoi(games), Medal, athlete_id);
+            //printf("ANO: %d, Medal: '%s', ID: '%s'\n", atoi(games), Medal, athlete_id);
             if(contemElemento(lista,tamanho,atoi(athlete_id)) == 1){//verifica se esse atleta ja está na lista.
-                continue;
+                continue;//se já estiver incluso, ele vai para a próxima 
             }
             // NO LOOP DO results.csv
             int id = atoi(athlete_id); // converte de string para int
@@ -103,7 +116,8 @@ int main(){
             ganhadores++;
         }
     }
-    printf("Total de atletas medalhistas únicos: %d\n", ganhadores);
+
+    printf("houve um total de %d medalhistas.",ganhadores);
 
     FILE *bio = fopen("arquivoscsvs/clean-data/bios.csv","r");
 
@@ -115,38 +129,33 @@ int main(){
         //o arquivo original CSV é:
         //athlete_id,name,born_date,born_city,born_region,born_country,NOC,height_cm,weight_kg,died_date
 
-        // Pula linhas vazias
-        if(strlen(linha) < 2){
-            continue;
-        } 
-
         char *id, *name, *born, *born_city, *born_region, *born_country, *NOC, *height, *weight;
         double peso;
 
-        transformarAspasParaZero(linha);
-
         //aqui abaixo está o reconhecimendo dos dados:
+        //usando o mesmo esqueleto da parte anterior:
 
-        id = strtok(linha, ",");//parte que também nos interessa.
-        name = strtok(NULL, ",");
-        born = strtok(NULL, ",");
-        born_city = strtok(NULL, ",");
-        born_region = strtok(NULL, ",");
-        born_country = strtok(NULL, ",");
-        NOC = strtok(NULL, ",");
-        height = strtok(NULL, ",");
-        weight = strtok(NULL, ",");//parte que nos interessa.
+        char *ptr = linha;
+        char *campo;
+
+        proximoCampo(&ptr, &id);
+        proximoCampo(&ptr, &name);
+        proximoCampo(&ptr, &born);
+        proximoCampo(&ptr, &born_city);
+        proximoCampo(&ptr, &born_region);
+        proximoCampo(&ptr, &born_country);
+        proximoCampo(&ptr, &NOC);
+        proximoCampo(&ptr, &height);
+        proximoCampo(&ptr, &weight);
 
         if(weight == NULL || strlen(weight) == 0 || id==NULL || strlen(id)==0){
-            continue;
-        }
-        if(strlen(weight) < 2 || strlen(weight)> 6 ){
             continue;
         }
 
         // NO LOOP DO bios.csv  
         //printf("ID: '%s', Weight: '%s'\n", id, weight); teste para vê se pegava corretamnete o ID e o peso.
         if(contemElemento(lista,tamanho,atoi(id)) == 1){//funçãpo para percorrer a lista e verificar se o id está presente na lista dos ganhadores.
+            //printf("id: %s  weight: %s\n",id,weight);
             peso = atof(weight);
             peso_total += peso;
             qtdd_atletas++;//adiciona um atleta na quantidade de atletas total daquele ano.
