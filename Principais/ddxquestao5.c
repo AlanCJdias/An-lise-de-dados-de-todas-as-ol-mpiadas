@@ -1,27 +1,54 @@
-//para uma determinada competição, determine o peso médio dos atletas masculinos e atletas femininos.
+//para uma determinada competição(um esporte em específico), determine o peso médio dos atletas masculinos e atletas femininos.
 
 #include <stdio.h>
 #include <string.h>
 #include "ddxquestao5.h"
 
+int contemElemento(int *lista, int tamanho, int valor) {
+    for (int i = 0; i < tamanho; i++) {
+        if (lista[i] == valor)
+            return 1;//percorre toda a lista, se tiver na lista, retorna um, se não, retorna 0.
+    }
+    return 0;
+}
+
+int proximoCampo(char **ptr, char **campo) {
+    char *p = *ptr;
+    int dentroAspas = 0; // Flag para controlar se estamos dentro de aspas(o CSV tem muitas aspas).
+
+    *campo = p; 
+
+    while (*p) { // Enquanto não chegar ao final da string
+        if (*p == '"') { // se p for aspas .
+            dentroAspas = !dentroAspas; //alterar o valor da variável para informar que está entre aspas.
+        } else if (*p == ',' && !dentroAspas) {// se p for igual a , e estiver fora das aspas.
+            *p = '\0';
+            *ptr = p + 1; // Atualiza ptr para apontar para o próximo campo
+            return 1; // aqui ele já achou 0 campo inteiro.
+        }
+        p++; // Avança para o próximo caractere
+    }
+
+    *ptr = p;  // Atualiza ptr para o final da string, ou seja, a parte que foi pega no campo foi "removida".
+    return 1;
+}
 
 int executarDdxQuestao5(void){
    
-    FILE *arquivo = fopen("arquivoscsvs/results/results.csv", "r");
+
+    FILE *arquivo = fopen("results.csv", "r");
     if (!arquivo) {
         perror("Erro ao abrir results.csv");
         return 1;
     }
-
-    char modalidadeBuscar[50];
-        //guarda cada linha do vsc
-    char linha[200];
-//dados dos atletas
-    char nome[50], modalidade[50], sexo;
-    float peso;
-
+    
+    //aqui que ficará as respostas importantes para a questão.
     int qtdatlMasc = 0, qtdatlFem = 0;
     float somaatlMasc = 0, somaatlFem = 0;
+
+    char modalidadeBuscar[50];
+
+    
 
     // Entrada da modalidade
     printf("Digite a modalidade: ");
@@ -35,7 +62,7 @@ int executarDdxQuestao5(void){
     while (fgets(linha, sizeof(linha), arquivo)) {
         sscanf(linha, "%49[^;];%49[^;];%c;%f",
                nome, modalidade, &sexo, &peso);
-//filtro para buscar apenas a modalidade digitada
+        //filtro para buscar apenas a modalidade digitada
         if (strcmp(modalidade, modalidadeBuscar) == 0) {
             // separa os atletas e soma os pesos
             if (sexo == 'M') {
