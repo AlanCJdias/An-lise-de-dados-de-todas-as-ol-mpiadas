@@ -48,10 +48,10 @@ int main(){
             executarQuestao11();
         }
         else if (opcaoDeUsuario == 3) {
-            executarQuestao5();
+            executarDdxQuestao5();
         }
         else if (opcaoDeUsuario == 4) {
-            executarQuestao11();
+            executarDdxQuestao11();
         }
         else {
             printf("Opcao invalida. Tente novamente.\n");

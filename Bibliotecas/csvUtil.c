@@ -143,3 +143,54 @@ TipoMedalha identificarTipoMedalha(const char *medalha) {
 
     return medalhaNenhum;
 }
+
+/* comparação sem diferenciar maiúsculas/minúsculas */
+static int iguaisSemCase(const char *a, const char *b) {
+    while (*a && *b) {
+        char ca = (char)tolower((unsigned char)*a);
+        char cb = (char)tolower((unsigned char)*b);
+        if (ca != cb) return 0;
+        a++; b++;
+    }
+    return *a == '\0' && *b == '\0';
+}
+
+int obterNocPorNomePais(const char *nomePais, char *nocSaida, int tamNocSaida) {
+    FILE *arq = fopen("arquivoscsvs/clean-data/noc_regions.csv", "r");
+    if (!arq) return 0;
+
+    char linha[65536];
+    char *campos[32];
+
+    if (!fgets(linha, sizeof(linha), arq)) {
+        fclose(arq);
+        return 0;
+    }
+
+    removerQuebraLinha(linha);
+    int total = separarCsv(linha, campos, 32);
+
+    int idxNoc = encontrarIndiceColuna(campos, total, "NOC");
+    int idxRegion = encontrarIndiceColuna(campos, total, "region");
+
+    if (idxNoc < 0 || idxRegion < 0) {
+        fclose(arq);
+        return 0;
+    }
+
+    while (fgets(linha, sizeof(linha), arq)) {
+        removerQuebraLinha(linha);
+        int n = separarCsv(linha, campos, 32);
+        if (n <= idxRegion || n <= idxNoc) continue;
+
+        if (iguaisSemCase(campos[idxRegion], nomePais)) {
+            strncpy(nocSaida, campos[idxNoc], tamNocSaida - 1);
+            nocSaida[tamNocSaida - 1] = '\0';
+            fclose(arq);
+            return 1;
+        }
+    }
+
+    fclose(arq);
+    return 0;
+}
