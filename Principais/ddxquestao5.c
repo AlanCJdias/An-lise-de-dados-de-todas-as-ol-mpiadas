@@ -33,7 +33,7 @@ int proximoCampo(char **ptr, char **campo) {
     return 1;
 }
 
-int executarDdxQuestao5(void){
+int executarDdxQuestao5(){
    
 
     FILE *arquivo = fopen("results.csv", "r");

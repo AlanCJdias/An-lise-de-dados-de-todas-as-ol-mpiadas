@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "questao5.h"
+#include "../Bibliotecas/csvUtil.h"
 #define MAX_LINE 262144
 
 
@@ -42,8 +43,8 @@ int executarQuestao5(){
 
     double peso_total=0,qtdd_atletas=0;// esse será o que a questão pede.
 
-    FILE *arquivo = fopen("arquivoscsvs/results/results.csv","r");//pega os arquivos com todos os jogos.
-    int edicao_escolhida=9999;//apenas para ter um valor inicial. pode ser qualquer outro.
+    FILE *arquivo = abrirArquivoDados("results/results.csv", "r");//pega os arquivos com todos os jogos.
+    int edicao_escolhida=9999;
     char linha[MAX_LINE];
 
     while (1==1){

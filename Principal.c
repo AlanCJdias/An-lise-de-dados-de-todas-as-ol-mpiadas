@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 //esse são os includes para chamar as outras questões, acho esse metodo mais organizado e prático.
+#include "Bibliotecas/csvUtil.h"
 #include "Principais/questao5.h"
 #include "Principais/questao11.h"
 #include "Principais/ddxquestao5.h"
@@ -24,6 +25,20 @@ static int lerOpcao(void){
 int main(){
     
     int opcaoDeUsuario;
+    /* ALTERAÇÃO: o professor informa onde está a pasta de CSVs (arquivoscsvs) */
+    char caminhoDados[512];
+
+    printf("Digite o caminho da pasta de dados (ex: /home/usuario/arquivoscsvs)\n");
+    printf("Se estiver na pasta do projeto, apenas pressione ENTER para usar 'arquivoscsvs': ");
+    if (fgets(caminhoDados, sizeof(caminhoDados), stdin)) {
+        removerQuebraLinha(caminhoDados);
+
+        if (caminhoDados[0] == '\0') {
+            definirDiretorioDados("arquivoscsvs"); /* padrão */
+        } else {
+            definirDiretorioDados(caminhoDados);
+        }
+    }
 
     while(1){
         printf("Escolha uma questao para executar:(digite um numero correspondente ao numero ligado a questao) \n");

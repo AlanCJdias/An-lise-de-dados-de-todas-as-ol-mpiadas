@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#define TAM_CAMINHO 1024
 
 void removerQuebraLinha(char *linha) {
     if (!linha) return;
@@ -70,32 +71,7 @@ int encontrarIndiceColuna(char **camposCabecalho, int totalCampos, const char *n
     return -1;
 }
 
-int converterInt(const char *texto, int *saida) {
-    if (!texto || !*texto || !saida) return 0;
-    char *fim = NULL;
-    long v = strtol(texto, &fim, 10);
-    if (fim == texto) return 0;
-    *saida = (int)v;
-    return 1;
-}
 
-int converterLong(const char *texto, long *saida) {
-    if (!texto || !*texto || !saida) return 0;
-    char *fim = NULL;
-    long v = strtol(texto, &fim, 10);
-    if (fim == texto) return 0;
-    *saida = v;
-    return 1;
-}
-
-int converterDouble(const char *texto, double *saida) {
-    if (!texto || !*texto || !saida) return 0;
-    char *fim = NULL;
-    double v = strtod(texto, &fim);
-    if (fim == texto) return 0;
-    *saida = v;
-    return 1;
-}
 
 int extrairAnoEEstacaoGames(const char *games, int *ano, char *estacao3, size_t tamEstacao3) {
     if (!games || !ano || !estacao3 || tamEstacao3 < 2) return 0;
@@ -127,22 +103,8 @@ int extrairAnoEEstacaoGames(const char *games, int *ano, char *estacao3, size_t 
     return (j > 0);
 }
 
-int medalhaValida(const char *medalha) {
-    if (!medalha) return 0;
-    if (medalha[0] == '\0') return 0;
-    if (strcmp(medalha, "NA") == 0) return 0;
-    return 1;
-}
 
-TipoMedalha identificarTipoMedalha(const char *medalha) {
-    if (!medalha) return medalhaNenhum;
 
-    if (strcmp(medalha, "Gold") == 0)   return medalhaOuro;
-    if (strcmp(medalha, "Silver") == 0) return medalhaPrata;
-    if (strcmp(medalha, "Bronze") == 0) return medalhaBronze;
-
-    return medalhaNenhum;
-}
 
 /* comparação sem diferenciar maiúsculas/minúsculas */
 static int iguaisSemCase(const char *a, const char *b) {
@@ -156,7 +118,7 @@ static int iguaisSemCase(const char *a, const char *b) {
 }
 
 int obterNocPorNomePais(const char *nomePais, char *nocSaida, int tamNocSaida) {
-    FILE *arq = fopen("arquivoscsvs/clean-data/noc_regions.csv", "r");
+    FILE *arq = abrirArquivoDados("clean-data/noc_regions.csv", "r");
     if (!arq) return 0;
 
     char linha[65536];
@@ -193,4 +155,34 @@ int obterNocPorNomePais(const char *nomePais, char *nocSaida, int tamNocSaida) {
 
     fclose(arq);
     return 0;
+}
+
+/* Guarda o diretório base (ex: "/home/.../arquivoscsvs" ou "arquivoscsvs") */
+static char diretorioDados[TAM_CAMINHO] = "arquivoscsvs";
+
+/* Remove barra final para evitar "//" ao montar caminho */
+static void removerBarraFinal(char *s) {
+    size_t n = strlen(s);
+    while (n > 0 && (s[n - 1] == '/' || s[n - 1] == '\\')) {
+        s[n - 1] = '\0';
+        n--;
+    }
+}
+
+void definirDiretorioDados(const char *diretorioBase) {
+    if (!diretorioBase || diretorioBase[0] == '\0') return;
+
+    strncpy(diretorioDados, diretorioBase, sizeof(diretorioDados) - 1);
+    diretorioDados[sizeof(diretorioDados) - 1] = '\0';
+
+    removerBarraFinal(diretorioDados);
+}
+
+FILE *abrirArquivoDados(const char *caminhoRelativo, const char *modo) {
+    if (!caminhoRelativo || !modo) return NULL;
+
+    char caminhoCompleto[TAM_CAMINHO];
+    snprintf(caminhoCompleto, sizeof(caminhoCompleto), "%s/%s", diretorioDados, caminhoRelativo);
+
+    return fopen(caminhoCompleto, modo);
 }

@@ -154,7 +154,7 @@ int executarDdxQuestao11(void) {
     int filtrarWinter, filtrarSummer;
     definirFiltroEstacao(escolha, &filtrarWinter, &filtrarSummer);
 
-    FILE *arquivo = fopen("arquivoscsvs/results/results.csv", "r");
+    FILE *arquivo = abrirArquivoDados("results/results.csv", "r");
     if (!arquivo) {
         perror("Erro ao abrir results.csv");
         return 1;
@@ -300,7 +300,7 @@ int executarDdxQuestao11(void) {
     }
 
     /* Passo C: segunda passada no CSV para contar TOTAL de medalhas por edição */
-    arquivo = fopen("arquivoscsvs/results/results.csv", "r");
+    arquivo = abrirArquivoDados("results/results.csv", "r");
     if (!arquivo) {
         perror("Erro ao abrir results.csv (segunda passada)");
         return 1;
