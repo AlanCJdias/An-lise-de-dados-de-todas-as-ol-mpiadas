@@ -42,4 +42,11 @@ typedef enum {
 /* Identifica o tipo de medalha a partir do texto */
 TipoMedalha indetificarTipoMedalha(const char *medalha);
 
+/* procura o NOC pelo nome do país (coluna region) no noc_regions.csv
+   retorna 1 se achou e copia o NOC para nocSaida */
+int obterNocPorNomePais(
+    const char *nomePais,
+    char *nocSaida,
+    int tamNocSaida
+);
 

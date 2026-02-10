@@ -22,12 +22,36 @@ int executarQuestao11(void){
     int primeiro_ano = 9999;//serve apenas para ser alterado no futuro.
     char primeira_edicao[100] = "";//serve apenas para ser alterado no futuro.
 
-    char linha[MAX_LINE];
-    char pais_escolhido[4];
-    printf("Digite o país (NOC com apenas 3 letras ex: BRA, FRA): ");
-    scanf("%3s", pais_escolhido); // esse n3 é para definir o tamanho máximo.
+   char linha[MAX_LINE];
 
-    
+    /* Agora o usuário pode digitar o nome do país (ex: Brazil) ou o NOC (ex: BRA) */
+    char entradaPais[64];
+    char pais_escolhido[4];
+
+    printf("Digite o nome do país (ex: Brazil) ou o NOC (ex: BRA): ");
+    if (!fgets(entradaPais, sizeof(entradaPais), stdin)) {
+        fclose(arquivo);
+        return 1;
+    }
+    removerQuebraLinha(entradaPais);
+
+    /* Se tiver 3 caracteres, assumimos que já é um NOC */
+    if (strlen(entradaPais) == 3) {
+        strncpy(pais_escolhido, entradaPais, sizeof(pais_escolhido) - 1);
+        pais_escolhido[sizeof(pais_escolhido) - 1] = '\0';
+    } else {
+        /* Caso contrário, busca o NOC no noc_regions.csv */
+        if (!obterNocPorNomePais(entradaPais, pais_escolhido, sizeof(pais_escolhido))) {
+            printf("Nao encontrei o país '%s' no noc_regions.csv.\n", entradaPais);
+            printf("Dica: tente o nome em inglês (ex: Brazil) ou digite o NOC (ex: BRA).\n");
+            fclose(arquivo);
+            return 1;
+        }
+    }
+
+    printf("NOC selecionado: %s\n", pais_escolhido);
+
+
     fgets(linha, MAX_LINE, arquivo);   // lê o cabeçalho
     removerQuebraLinha(linha);
 

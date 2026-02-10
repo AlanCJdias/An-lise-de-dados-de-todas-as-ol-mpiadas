@@ -127,9 +127,25 @@ int executarDdxQuestao11(void) {
     char pais[8];
     char escolha[16];
 
-    printf("Digite o pais (NOC) ex: BRA, USA: ");
-    if (!fgets(pais, sizeof(pais), stdin)) return 1;
-    removerQuebraLinha(pais);
+        /* Agora o usuário pode digitar o nome do país ou o NOC */
+    char entradaPais[64];
+
+    printf("Digite o nome do país (ex: Brazil) ou o NOC (ex: BRA): ");
+    if (!fgets(entradaPais, sizeof(entradaPais), stdin)) return 1;
+    removerQuebraLinha(entradaPais);
+
+    if (strlen(entradaPais) == 3) {
+        strncpy(pais, entradaPais, sizeof(pais) - 1);
+        pais[sizeof(pais) - 1] = '\0';
+    } else {
+        if (!obterNocPorNomePais(entradaPais, pais, sizeof(pais))) {
+            printf("Nao encontrei o país '%s' no noc_regions.csv.\n", entradaPais);
+            printf("Dica: tente o nome em inglês (ex: Brazil) ou digite o NOC (ex: BRA).\n");
+            return 1;
+        }
+    }
+
+    printf("NOC selecionado: %s\n", pais);
 
     printf("Escolha a estacao (Winter / Summer / Both): ");
     if (!fgets(escolha, sizeof(escolha), stdin)) return 1;
