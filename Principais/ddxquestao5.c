@@ -1,8 +1,67 @@
 //para uma determinada competição, determine o peso médio dos atletas masculinos e atletas femininos.
 
 #include <stdio.h>
+#include <string.h>
 
 int executarDdxQuestao5(void){
-    
+    int main() {
+    FILE *arquivo = fopen("arquivoscsvs/results/results.csv", "r");
+    if (!arquivo) {
+        perror("Erro ao abrir results.csv");
+        return 1;
+    }
+
+    char modalidadeBuscar[50];
+        //guarda cada linha do vsc
+    char linha[200];
+//dados dos atletas
+    char nome[50], modalidade[50], sexo;
+    float peso;
+
+    int qtdatlMasc = 0, qtdatlFem = 0;
+    float somaatlMasc = 0, somaatlFem = 0;
+
+    // Entrada da modalidade
+    printf("Digite a modalidade: ");
+    fgets(modalidadeBuscar, sizeof(modalidadeBuscar), stdin);
+    modalidadeBuscar[strcspn(modalidadeBuscar, "\n")] = '\0';
+
+    // Pula o cabeçalho do CSV
+    fgets(linha, sizeof(linha), arquivo);
+
+    // Leitura do arquivo, lendo cada atleta até o final do arquivo
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        sscanf(linha, "%49[^;];%49[^;];%c;%f",
+               nome, modalidade, &sexo, &peso);
+//filtro para buscar apenas a modalidade digitada
+        if (strcmp(modalidade, modalidadeBuscar) == 0) {
+            // separa os atletas e soma os pesos
+            if (sexo == 'M') {
+                somaatlMasc += peso;
+                qtdatlMasc++;
+            } else if (sexo == 'F') {
+                somaatlFem += peso;
+                qtdatlFem++;
+            }
+        }
+    }
+
+    fclose(arquivo);
+
+    // Resultados
+    printf("\nModalidade: %s\n", modalidadeBuscar);
+
+    if (qtdatlMasc > 0)
+        printf("Peso medio masculino: %.2f kg\n", somaatlMasc / qtdatlMasc);
+    else
+        printf("Nao ha atletas masculinos nessa modalidade.\n");
+
+    if (qtdatlFem > 0)
+        printf("Peso medio feminino: %.2f kg\n", somaatlFem / qtdatlFem);
+    else
+        printf("Nao ha atletas femininas nessa modalidade.\n");
+
+    return 0;
+}
     return 0;
 }
