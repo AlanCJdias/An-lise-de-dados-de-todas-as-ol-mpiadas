@@ -2,9 +2,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "ddxquestao5.h"
+
 
 int executarDdxQuestao5(void){
-    int main() {
+   
     FILE *arquivo = fopen("arquivoscsvs/results/results.csv", "r");
     if (!arquivo) {
         perror("Erro ao abrir results.csv");
@@ -61,7 +63,5 @@ int executarDdxQuestao5(void){
     else
         printf("Nao ha atletas femininas nessa modalidade.\n");
 
-    return 0;
-}
     return 0;
 }
