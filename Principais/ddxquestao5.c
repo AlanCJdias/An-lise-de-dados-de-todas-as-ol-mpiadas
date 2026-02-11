@@ -64,7 +64,7 @@ int executarDdxQuestao5(){
         }
     }
 
-    FILE *resultados = abrirArquivoDados("results/results.csv", "r");//pega os arquivos com todos os jogos.
+    FILE *resultados = abrirArquivoDados("results.csv","r");//pega os arquivos com todos os jogos.
 
     //agora precisamos fazer uma lista dinâmica para armazenar todos os ID's dos atletas que ganharma uma olípiada em determinado ano.
     int *lista = NULL; // aqui estarão os ids dos ganhadores de medalhas em determinado ano.
@@ -135,7 +135,7 @@ int executarDdxQuestao5(){
         }
     }
 
-    FILE *bio_genero = abrirArquivoDados("athletes/bios.csv","r");
+    FILE *bio_genero = abrirArquivoDados("bios.csv","r");
 
     fgets(linha, MAX_LINE, bio_genero);//apenas para remover o cabeçalho.
 
@@ -211,7 +211,7 @@ int executarDdxQuestao5(){
     //agora iremos calcular o peso médio de cada gênero do esporte em determinado ano.
 
     //esse arquivo contme os pesos de todos os atletas por id.
-    FILE *pesos = abrirArquivoDados("clean-data/bios_locs.csv", "r");
+    FILE *pesos = abrirArquivoDados("bios_peso.csv", "r");
 
     fgets(linha, MAX_LINE, pesos);//apenas para remover o cabeçalho.
 
