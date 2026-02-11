@@ -10,3 +10,6 @@ gcc -IBibliotecas -IPrincipais \
   Principais/ddxquestao11.c \
   Bibliotecas/csvUtil.c \
   -o app
+
+
+ou em uma única linha de comando: gcc -IBibliotecas -IPrincipais Principal.c Principais/questao5.c Principais/ddxquestao5.c Principais/questao11.c Principais/ddxquestao11.c Bibliotecas/csvUtil.c -o app

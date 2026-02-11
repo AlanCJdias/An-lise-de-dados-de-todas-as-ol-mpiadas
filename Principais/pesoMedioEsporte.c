@@ -1,4 +1,4 @@
-//para uma determinada competição(um esporte em específico), em um determinado ano, determine o peso médio dos atletas masculinos e atletas femininos.
+//para uma determinada competição(um esporte em específico e um determinado ano) determine o peso médio dos atletas masculinos e atletas femininos(naquele ano e naquele esporte)
 
 #include <stdio.h>
 #include <stdlib.h>

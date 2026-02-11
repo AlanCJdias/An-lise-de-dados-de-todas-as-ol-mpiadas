@@ -7,7 +7,6 @@
 #include "../Bibliotecas/csvUtil.h"
 #define MAX_LINE 262144
 
-
 int contemElemento(int *lista, int tamanho, int valor) {
     for (int i = 0; i < tamanho; i++) {
         if (lista[i] == valor)
@@ -36,7 +35,6 @@ int proximoCampo(char **ptr, char **campo) {
     *ptr = p;  // Atualiza ptr para o final da string, ou seja, a parte que foi pega no campo foi "removida".
     return 1;
 }
-
 
 int executarPesoMedio(){
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
