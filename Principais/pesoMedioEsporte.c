@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include "ddxquestao5.h"
+#include "pesoMedioEsporte.h"
 #include "../Bibliotecas/csvUtil.h"
 #define MAX_LINE 262144
 
@@ -37,7 +37,7 @@ int proximocampo(char **ptr, char **campo) {
     return 1;
 }
 
-int executarDdxQuestao5(){
+int executarPesoMedioEsporte(){
     setlocale(LC_ALL, "portuguese");
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
     //todas as variáveis necessárias para se fazer a ddx da questão 5.

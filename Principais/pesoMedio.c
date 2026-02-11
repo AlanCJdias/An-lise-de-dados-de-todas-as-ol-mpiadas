@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "questao5.h"
+#include "pesoMedio.h"
 #include "../Bibliotecas/csvUtil.h"
 #define MAX_LINE 262144
 
@@ -36,7 +36,7 @@ int proximoCampo(char **ptr, char **campo) {
     return 1;
 }
 
-int executarQuestao5(){
+int executarPesoMedio(){
     //primeireo passo será guardar o ID de todos os atletas que ganharam algum jogo de determinada edição.
 
     double peso_total=0,qtdd_atletas=0;// esse será o que a questão pede.

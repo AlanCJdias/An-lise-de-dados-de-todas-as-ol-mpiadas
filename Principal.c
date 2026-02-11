@@ -6,10 +6,10 @@
 #include <string.h>
 //esse são os includes para chamar as outras questões, acho esse metodo mais organizado e prático.
 #include "Bibliotecas/csvUtil.h"
-#include "Principais/questao5.h"
-#include "Principais/questao11.h"
-#include "Principais/ddxquestao5.h"
-#include "Principais/ddxquestao11.h"
+#include "Principais/pesoMedio.h"
+#include "Principais/primeiraMedalha.h"
+#include "Principais/pesoMedioEsporte.h"
+#include "Principais/evolucaoPais.h"
 
 static int lerOpcao(void){
     // Função para ler a opção do usuário de forma segura
@@ -42,10 +42,10 @@ int main(){
 
     while(1){
         printf("Escolha uma questao para executar:(digite um numero correspondente ao numero ligado a questao) \n");
-        printf("1 - Questao 5\n");
-        printf("2 - Questao 11\n");
-        printf("3 - Ddx Questao 5\n");
-        printf("4 - Ddx Questao 11\n");
+        printf("1 - Peso médio dos atletas\n");
+        printf("2 - Primeira medalha de um país\n");
+        printf("3 - Peso médio de um esporte em um ano\n");
+        printf("4 - Evolução do número de medalhas de um país\n");
         printf("0 - Sair\n");
         printf("Opcao: ");
  
@@ -57,16 +57,16 @@ int main(){
             break;
         }
         else if (opcaoDeUsuario == 1) {
-            executarQuestao5();
+            executarPesoMedio();
         }
         else if (opcaoDeUsuario == 2) {
-            executarQuestao11();
+            executarPrimeiraMedalha();
         }
         else if (opcaoDeUsuario == 3) {
-            executarDdxQuestao5();
+            executarPesoMedioEsporte();
         }
         else if (opcaoDeUsuario == 4) {
-            executarDdxQuestao11();
+            executarEvolucaoPais();
         }
         else {
             printf("Opcao invalida. Tente novamente.\n");

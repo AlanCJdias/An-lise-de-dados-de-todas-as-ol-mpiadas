@@ -2,4 +2,4 @@
 
 #pragma once
 // Protótipo da função que executa a questão 11
-int executarQuestao11(void);
+int executarPrimeiraMedalPais(void);

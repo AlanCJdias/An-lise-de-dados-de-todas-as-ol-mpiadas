@@ -2,6 +2,6 @@
 
 #pragma once
 
-int executarDdxQuestao5(void);
+int executarPesoMedioEsporte(void);
 
 

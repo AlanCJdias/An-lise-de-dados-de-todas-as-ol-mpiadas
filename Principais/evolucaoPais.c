@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../Bibliotecas/csvUtil.h"
-#include "ddxquestao11.h"
+#include "evolucaoPais.h"
 
 #define maxLine 262144
 #define maxCampos 64
@@ -123,7 +123,7 @@ static void graficoTotalMedalhasPorEdicao(const ResumoEdicao *resumos, int n) {
 
 
 
-int executarDdxQuestao11(void) {
+int executarEvolucaoPais(void) {
     char pais[8];
     char escolha[16];
 
