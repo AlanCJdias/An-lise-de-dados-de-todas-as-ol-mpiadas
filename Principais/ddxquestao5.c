@@ -46,7 +46,7 @@ int executarDdxQuestao5(){
     int qtdd_fem=0, qtdd_mas=0;//quantidade de atletas em determinado ano.
     char esporte_escolhido[50];
 
-    printf("Digite qual eaporte você deseja calcular o peso médio feminino e masculino em um determinado ano.");
+    printf("Digite qual eaporte você deseja calcular o peso médio feminino e masculino em um determinado ano.\n");
     fgets(esporte_escolhido, sizeof(esporte_escolhido), stdin);//preenche corretamente o esporte escolhido com o tamanho adequado.
     esporte_escolhido[strcspn(esporte_escolhido, "\n")] = 0; // Remove o \n
     
@@ -54,7 +54,7 @@ int executarDdxQuestao5(){
     char linha[MAX_LINE];
 
     while (1==1){
-        printf("Digite qual ano das olímpiadas você deseja calcular o peso médio:");
+        printf("Digite qual ano das olímpiadas você deseja calcular o peso médio: \n");
         scanf("%d", &edicao_escolhida);
         if(edicao_escolhida%2 != 0 || edicao_escolhida <1880){//se for ímpar, não houve competição.
             printf("Nesse ano não ouve competição.");
@@ -64,7 +64,7 @@ int executarDdxQuestao5(){
         }
     }
 
-    FILE *resultados = abrirArquivoDados("results.csv","r");//pega os arquivos com todos os jogos.
+    FILE *resultados = abrirArquivoDados("results/results.csv", "r");//pega os arquivos com todos os jogos.
 
     //agora precisamos fazer uma lista dinâmica para armazenar todos os ID's dos atletas que ganharma uma olípiada em determinado ano.
     int *lista = NULL; // aqui estarão os ids dos ganhadores de medalhas em determinado ano.
@@ -135,7 +135,7 @@ int executarDdxQuestao5(){
         }
     }
 
-    FILE *bio_genero = abrirArquivoDados("bios.csv","r");
+    FILE *bio_genero = abrirArquivoDados("athletes/bios.csv","r");
 
     fgets(linha, MAX_LINE, bio_genero);//apenas para remover o cabeçalho.
 
@@ -211,7 +211,7 @@ int executarDdxQuestao5(){
     //agora iremos calcular o peso médio de cada gênero do esporte em determinado ano.
 
     //esse arquivo contme os pesos de todos os atletas por id.
-    FILE *pesos = abrirArquivoDados("bios_peso.csv", "r");
+    FILE *pesos = abrirArquivoDados("clean-data/bios_locs.csv", "r");
 
     fgets(linha, MAX_LINE, pesos);//apenas para remover o cabeçalho.
 
