@@ -60,7 +60,7 @@ int main(){
             executarPesoMedio();
         }
         else if (opcaoDeUsuario == 2) {
-            executarPrimeiraMedalha();
+            executarPrimeiraMedalPais();
         }
         else if (opcaoDeUsuario == 3) {
             executarPesoMedioEsporte();
