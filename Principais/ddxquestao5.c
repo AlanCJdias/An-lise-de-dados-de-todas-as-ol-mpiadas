@@ -274,12 +274,20 @@ int executarDdxQuestao5(){
 
 
     //resposta para o público feminino:
-    printf("Na olímpiada de %d houve %d atletas femininas que jogaram %s\n.", edicao_escolhida, qtdd_fem, esporte_escolhido);
-    printf("O peso médio feminino foi de: %.2lf\n", peso_fem/qtdd_fem);
+    if(qtdd_fem>0){
+        printf("Na olímpiada de %d houve %d atletas femininas que jogaram %s.\n", edicao_escolhida, qtdd_fem, esporte_escolhido);
+        printf("O peso médio feminino foi de: %.2lf\n", peso_fem/qtdd_fem);
+    }else{
+        printf("Na olímpiada de %d houve 0 atletas femininas que jogaram %s.\n", edicao_escolhida, esporte_escolhido);
+    }
 
     //resposta para o público masculino:
-    printf("Na olímpiada de %d houve %d atletas masculinos que jogaram %s\n.", edicao_escolhida, qtdd_mas, esporte_escolhido);
-    printf("O peso médio masculino foi de: %.2lf\n", peso_mas/qtdd_mas);
+    if(qtdd_mas>0){
+        printf("Na olímpiada de %d houve %d atletas masculinos que jogaram %s\n.", edicao_escolhida, qtdd_mas, esporte_escolhido);
+        printf("O peso médio masculino foi de: %.2lf\n", peso_mas/qtdd_mas);
+    }else{
+        printf("Na olímpiada de %d houve 0 atletas masculinos que jogaram %s.\n", edicao_escolhida, esporte_escolhido);
+    }
 
     return 0;
 }
