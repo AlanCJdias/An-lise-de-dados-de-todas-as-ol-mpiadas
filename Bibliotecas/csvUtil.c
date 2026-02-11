@@ -7,10 +7,10 @@
 #define TAM_CAMINHO 1024
 
 /*
- * removerQuebraLinha:
- * Remove caracteres de fim de linha que o fgets normalmente traz:
- *  - '\n' (LF) e '\r' (CR)
- * Faz isso APENAS no final da string, repetindo até não haver mais.
+  removerQuebraLinha:
+  Remove caracteres de fim de linha que o fgets normalmente traz:
+   - '\n' (LF) e '\r' (CR)
+  Faz isso APENAS no final da string, repetindo até não haver mais.
  */
 void removerQuebraLinha(char *linha) {
     if (!linha) return;
@@ -25,25 +25,25 @@ void removerQuebraLinha(char *linha) {
 }
 
 /*
- * separarCsv:
- * Separa uma linha CSV em campos, gravando em 'campos' ponteiros para dentro da própria 'linha'.
- *
- * IMPORTANTE:
- * - Esta função MODIFICA a string 'linha', substituindo vírgulas separadoras por '\0'
- * - 'campos[i]' passa a apontar para pedaços dentro de 'linha'
- *
- * Recursos suportados:
- * - Campos entre aspas: "texto, com virgula"
- * - Aspas escapadas dentro de campo com aspas: "" vira " (uma aspa literal)
- *
- * Parâmetros:
- * - linha: buffer com a linha CSV (será alterado)
- * - campos: array de char* para receber os ponteiros dos campos
- * - maxCampos: capacidade do array 'campos'
- *
- * Retorno:
- * - total de campos encontrados na linha (mesmo que > maxCampos).
- *   (Ou seja: você pode saber que existem mais campos do que você armazenou.)
+  separarCsv:
+  Separa uma linha CSV em campos, gravando em 'campos' ponteiros para dentro da própria 'linha'.
+ 
+  IMPORTANTE:
+  - Esta função MODIFICA a string 'linha', substituindo vírgulas separadoras por '\0'
+  - 'campos[i]' passa a apontar para pedaços dentro de 'linha'
+ 
+  Recursos suportados:
+  - Campos entre aspas: "texto, com virgula"
+  - Aspas escapadas dentro de campo com aspas: "" vira " (uma aspa literal)
+ 
+  Parâmetros:
+  - linha: buffer com a linha CSV (será alterado)
+  - campos: array de char* para receber os ponteiros dos campos
+  - maxCampos: capacidade do array 'campos'
+ 
+  Retorno:
+  - total de campos encontrados na linha (mesmo que > maxCampos).
+    (Ou seja: você pode saber que existem mais campos do que você armazenou.)
  */
 int separarCsv(char *linha, char **campos, int maxCampos) {
     if (!linha || !campos || maxCampos <= 0) return 0;
@@ -53,19 +53,19 @@ int separarCsv(char *linha, char **campos, int maxCampos) {
     char *inicio = linha;   // início do campo atual (ponteiro dentro de 'linha')
 
     /*
-     * Percorre caractere a caractere:
-     * - Se achar aspas '"', alterna dentroAspas (entra/sai do modo "entre aspas")
-     * - Se achar vírgula ',' e NÃO estiver dentro de aspas, finaliza um campo
+      Percorre caractere a caractere:
+      - Se achar aspas '"', alterna dentroAspas (entra/sai do modo "entre aspas")
+      - Se achar vírgula ',' e NÃO estiver dentro de aspas, finaliza um campo
      */
     for (char *p = linha; *p; p++) {
 
         if (*p == '"') {
             /*
-             * Trata "" como aspas literal dentro de um campo entre aspas:
-             * Ex.: "He said ""Hello"""  ->  He said "Hello"
-             *
-             * Quando estamos dentro de aspas e encontramos um " seguido de outro ",
-             * removemos um deles com memmove (puxa a string 1 posição para a esquerda).
+              Trata "" como aspas literal dentro de um campo entre aspas:
+              Ex.: "He said ""Hello"""  ->  He said "Hello"
+             
+              Quando estamos dentro de aspas e encontramos um " seguido de outro ",
+              removemos um deles com memmove (puxa a string 1 posição para a esquerda).
              */
             if (dentroAspas && p[1] == '"') {
                 memmove(p, p + 1, strlen(p)); // remove uma aspa duplicada
@@ -77,10 +77,10 @@ int separarCsv(char *linha, char **campos, int maxCampos) {
 
         } else if (*p == ',' && !dentroAspas) {
             /*
-             * Vírgula "válida" como separador (fora de aspas):
-             * - Troca a vírgula por '\0' para terminar a string do campo atual
-             * - Guarda o ponteiro do início do campo
-             * - Move 'inicio' para o próximo caractere após a vírgula
+              Vírgula "válida" como separador (fora de aspas):
+              - Troca a vírgula por '\0' para terminar a string do campo atual
+              - Guarda o ponteiro do início do campo
+              - Move 'inicio' para o próximo caractere após a vírgula
              */
             *p = '\0';
 
@@ -92,15 +92,15 @@ int separarCsv(char *linha, char **campos, int maxCampos) {
     }
 
     /*
-     * Após o loop, precisamos registrar o último campo (não termina com vírgula).
+      Após o loop, precisamos registrar o último campo (não termina com vírgula).
      */
     if (total < maxCampos) campos[total] = inicio;
     total++;
 
     /*
-     * Pós-processamento dos campos armazenados (até maxCampos):
-     * 1) Trim simples de espaços ' ' nas bordas
-     * 2) Remove aspas externas: se começa e termina com '"', corta essas aspas
+      Pós-processamento dos campos armazenados (até maxCampos):
+      1) Trim simples de espaços ' ' nas bordas
+      2) Remove aspas externas: se começa e termina com '"', corta essas aspas
      */
     for (int i = 0; i < total && i < maxCampos; i++) {
         char *c = campos[i];
@@ -128,12 +128,12 @@ int separarCsv(char *linha, char **campos, int maxCampos) {
 }
 
 /*
- * encontrarIndiceColuna:
- * Procura o índice (posição) de uma coluna pelo nome, usando o cabeçalho já separado.
- *
- * Retorna:
- * - índice (0..totalCampos-1) se encontrar
- * - -1 se não encontrar
+  encontrarIndiceColuna:
+  Procura o índice (posição) de uma coluna pelo nome, usando o cabeçalho já separado.
+ 
+  Retorna:
+  - índice (0..totalCampos-1) se encontrar
+  - -1 se não encontrar
  */
 int encontrarIndiceColuna(char **camposCabecalho, int totalCampos, const char *nomeColuna) {
     if (!camposCabecalho || !nomeColuna) return -1;
@@ -147,15 +147,15 @@ int encontrarIndiceColuna(char **camposCabecalho, int totalCampos, const char *n
 }
 
 /*
- * extrairAnoEEstacaoGames:
- * Extrai:
- * - ano (int): os 4 primeiros dígitos
- * - estacao3 (char*): a palavra após o ano (ex.: "Summer" / "Winter")
- *
- * Exemplo esperado de entrada:
- *   "2012 Summer"
- *
- * Retorna 1 se conseguiu extrair, 0 se falhar.
+  extrairAnoEEstacaoGames:
+  Extrai:
+  - ano (int): os 4 primeiros dígitos
+  - estacao3 (char*): a palavra após o ano (ex.: "Summer" / "Winter")
+ 
+  Exemplo esperado de entrada:
+    "2012 Summer"
+ 
+  Retorna 1 se conseguiu extrair, 0 se falhar.
  */
 int extrairAnoEEstacaoGames(const char *games, int *ano, char *estacao3, size_t tamEstacao3) {
     if (!games || !ano || !estacao3 || tamEstacao3 < 2) return 0;
@@ -189,10 +189,10 @@ int extrairAnoEEstacaoGames(const char *games, int *ano, char *estacao3, size_t 
 }
 
 /*
- * iguaisSemCase:
- * Comparação case-insensitive (não diferencia maiúsculas/minúsculas).
- *
- * static => função privada deste arquivo (não exporta para outros .c)
+  iguaisSemCase:
+  Comparação case-insensitive (não diferencia maiúsculas/minúsculas).
+ 
+  static => função privada deste arquivo (não exporta para outros .c)
  */
 static int iguaisSemCase(const char *a, const char *b) {
     while (*a && *b) {
@@ -207,15 +207,15 @@ static int iguaisSemCase(const char *a, const char *b) {
 }
 
 /*
- * obterNocPorNomePais:
- * Abre o arquivo "clean-data/noc_regions.csv", encontra as colunas "NOC" e "region"
- * no cabeçalho, e procura uma linha onde region == nomePais (ignorando case).
- *
- * Se encontrar, copia o NOC para nocSaida.
- *
- * Retorna:
- * - 1 se encontrou e copiou
- * - 0 se não encontrou / erro de arquivo / formato
+  obterNocPorNomePais:
+  Abre o arquivo "clean-data/noc_regions.csv", encontra as colunas "NOC" e "region"
+  no cabeçalho, e procura uma linha onde region == nomePais (ignorando case).
+ 
+  Se encontrar, copia o NOC para nocSaida.
+ 
+  Retorna:
+  - 1 se encontrou e copiou
+  - 0 se não encontrou / erro de arquivo / formato
  */
 int obterNocPorNomePais(const char *nomePais, char *nocSaida, int tamNocSaida) {
     // Usa a infra de diretório base + caminho relativo
@@ -268,17 +268,17 @@ int obterNocPorNomePais(const char *nomePais, char *nocSaida, int tamNocSaida) {
 }
 
 /*
- * diretório base onde ficam os dados (CSV etc).
- * Padrão: "arquivoscsvs"
- *
- * static => variável privada deste arquivo
+  diretório base onde ficam os dados (CSV etc).
+  Padrão: "arquivoscsvs"
+ 
+  static => variável privada deste arquivo
  */
 static char diretorioDados[TAM_CAMINHO] = "arquivoscsvs";
 
 /*
- * removerBarraFinal:
- * Remove barras no final do caminho para evitar "//" ou "\\"
- * quando montar "diretorio/arquivo".
+  removerBarraFinal:
+  Remove barras no final do caminho para evitar "//" ou "\\"
+  quando montar "diretorio/arquivo".
  */
 static void removerBarraFinal(char *s) {
     size_t n = strlen(s);
@@ -289,9 +289,9 @@ static void removerBarraFinal(char *s) {
 }
 
 /*
- * definirDiretorioDados:
- * Define o diretório base (root) onde os CSVs estão.
- * Ex.: "arquivoscsvs" ou "/home/user/arquivoscsvs"
+  definirDiretorioDados:
+  Define o diretório base (root) onde os CSVs estão.
+  Ex.: "arquivoscsvs" ou "/home/user/arquivoscsvs"
  */
 void definirDiretorioDados(const char *diretorioBase) {
     if (!diretorioBase || diretorioBase[0] == '\0') return;
@@ -305,10 +305,10 @@ void definirDiretorioDados(const char *diretorioBase) {
 }
 
 /*
- * abrirArquivoDados:
- * Monta um caminho completo baseado no diretório base + caminho relativo:
- *   caminhoCompleto = "<diretorioDados>/<caminhoRelativo>"
- * e abre com fopen no modo indicado.
+  abrirArquivoDados:
+  Monta um caminho completo baseado no diretório base + caminho relativo:
+    caminhoCompleto = "<diretorioDados>/<caminhoRelativo>"
+  e abre com fopen no modo indicado.
  */
 FILE *abrirArquivoDados(const char *caminhoRelativo, const char *modo) {
     if (!caminhoRelativo || !modo) return NULL;
